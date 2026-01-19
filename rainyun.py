@@ -213,21 +213,25 @@ if __name__ == "__main__":
         logging.warning("警告：正在使用默认的用户名或密码，请在环境变量中设置 USER 和 PASSWORD！")
     debug = True
     linux = True
-
-    # 以下为代码执行区域，请勿修改！
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     logger = logging.getLogger(__name__)
+    logger.info("温馨提示!")
+    try:
+        r = requests.get('https://file.ziiix.cn/script.txt', timeout=10)
+        if r.status_code == 200:
+            logger.info(f"\n{r.text}")
+        else:
+            logger.error(f"请求失败，状态码: {r.status_code}")
+    except requests.exceptions.RequestException as e:
+        logger.error(f"网络请求出错: {e}")
+    # 以下为代码执行区域，请勿修改！
     ver = "2.2"
     logger.info("------------------------------------------------------------------")
     logger.info(f"雨云签到工具 v{ver} by SerendipityR ~")
     logger.info("Github发布页: https://github.com/SerendipityR-2022/Rainyun-Qiandao")
-    logger.info("------------------------------------------------------------------")
-
-    logger.info("------------------项目为二开容器化运行原作者在上面-------------------")
-    logger.info("                         VQ同号: 14768070                         ")
-    logger.info("                         交流Q群: 5036150                         ")
-    logger.info("               本项目仅作为学习参考，请勿用于其他用途                ")
-    logger.info("------------------------------------------------------------------")
+    logger.info("---------------------------------------------------------------")
+    logger.info("-----------------项目为二开容器化运行原作者在上面-----------------")
+    logger.info("-----容器化仓库地址：https://gitee.com/jd_688/Rainyun-qiandao-----")
     delay = random.randint(0, max_delay)
     delay_sec = random.randint(0, 60)
     if not debug:
@@ -251,14 +255,11 @@ if __name__ == "__main__":
         wait.until(EC.title_contains("雨云"))
         logger.info("页面标题已加载: {}".format(driver.title))
         time.sleep(10)
-        logger.info("等待登录表单元素加载...")
         try:
             wait.until(EC.presence_of_element_located((By.TAG_NAME, "input")))
-            logger.info("检测到输入框元素")
         except TimeoutException:
             logger.warning("未检测到输入框，继续尝试...")
         time.sleep(5)
-        logger.info("正在查找登录表单元素...")
         username = None
         username_selectors = [
             (By.NAME, 'login-field'),
@@ -278,7 +279,6 @@ if __name__ == "__main__":
         for selector in username_selectors:
             try:
                 username = wait.until(EC.visibility_of_element_located(selector))
-                logger.info(f"找到用户名输入框: {selector}")
                 break
             except TimeoutException:
                 continue
@@ -308,7 +308,6 @@ if __name__ == "__main__":
         for selector in password_selectors:
             try:
                 password = wait.until(EC.visibility_of_element_located(selector))
-                logger.info(f"找到密码输入框: {selector}")
                 break
             except TimeoutException:
                 continue
@@ -336,7 +335,6 @@ if __name__ == "__main__":
         for selector in login_selectors:
             try:
                 login_button = wait.until(EC.element_to_be_clickable(selector))
-                logger.info(f"找到登录按钮: {selector}")
                 break
             except TimeoutException:
                 logger.debug(f"未找到登录按钮: {selector}")
